@@ -1,10 +1,10 @@
 ﻿namespace Application;
 
-public interface IRepository<TId, TAggregate>
+public interface IRepository<in TId, TAggregate>
     where TAggregate : class
     where TId : notnull
 {
-    TId Create(TAggregate aggregate);
+    void Create(TAggregate aggregate);
     
     void Update(TAggregate aggregate);
     

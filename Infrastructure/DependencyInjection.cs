@@ -10,7 +10,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<DbContext>();
-        services.AddTransient<IRepository<int, Ingredient>, IngredientRepository>();
+        services.AddTransient<IRepository<int, Ingredient>, Repository<Ingredient>>();
+        services.AddTransient<IRepository<int, Cocktail>, Repository<Cocktail>>();
         return services;
     }
 }

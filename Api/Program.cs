@@ -21,6 +21,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+// Ingredients
 app.MapGet("/ingredients", (IRepository<int, Ingredient> repository) => repository.GetAll());
 app.MapGet("/ingredients/{id}", (IRepository<int, Ingredient> repository, int id) =>
     repository.Get(id) switch
@@ -30,8 +31,8 @@ app.MapGet("/ingredients/{id}", (IRepository<int, Ingredient> repository, int id
     });
 app.MapPost("/ingredients", (IRepository<int, Ingredient> repository, Ingredient ingredient) =>
 {
-    var id = repository.Create(ingredient);
-    return Results.Created($"/ingredients/{id}", id);
+    repository.Create(ingredient);
+    return Results.Created($"/ingredients/{ingredient.Id}", ingredient.Id);
 });
 app.MapPut("ingredients", (IRepository<int, Ingredient> repository, Ingredient ingredient) =>
 {
@@ -39,6 +40,27 @@ app.MapPut("ingredients", (IRepository<int, Ingredient> repository, Ingredient i
     return Results.NoContent();
 });
 app.MapDelete("ingredients/{id}", (IRepository<int, Ingredient> repository, int id) => 
-    repository.Delete(id) ? Results.NoContent() : Results.Problem());
+    repository.Delete(id) ? Results.NoContent() : Results.Problem()); // TODO need rework
+
+// Cocktails
+app.MapGet("/cocktails", (IRepository<int, Cocktail> repository) => repository.GetAll());
+app.MapGet("/cocktails/{id}", (IRepository<int, Cocktail> repository, int id) =>
+    repository.Get(id) switch
+    {
+        Cocktail cocktail => Results.Ok(cocktail),
+        null => Results.NotFound()
+    });
+app.MapPost("/cocktails", (IRepository<int, Cocktail> repository, Cocktail cocktail) =>
+{
+    repository.Create(cocktail);
+    return Results.Created($"/cocktails/{cocktail.Id}", cocktail.Id);
+});
+app.MapPut("cocktails", (IRepository<int, Cocktail> repository, Cocktail cocktail) =>
+{
+    repository.Update(cocktail);
+    return Results.NoContent();
+});
+app.MapDelete("cocktails/{id}", (IRepository<int, Cocktail> repository, int id) => 
+    repository.Delete(id) ? Results.NoContent() : Results.Problem()); // TODO need rework
 
 app.Run();
