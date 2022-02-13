@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddSingleton<DbContext>();
         services.AddTransient<IRepository<int, Ingredient>, Repository<Ingredient>>();
         services.AddTransient<IRepository<int, Cocktail>, Repository<Cocktail>>();
+        services.AddTransient<ICocktailViewRepository, CocktailViewRepository>();
         return services;
     }
 }

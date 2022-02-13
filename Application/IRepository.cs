@@ -14,3 +14,9 @@ public interface IRepository<in TId, TAggregate>
     
     bool Delete(TId id);
 }
+
+public interface ICocktailViewRepository : IRepository<int, CocktailViewModel>
+{
+    CocktailViewModel GetByCocktailId(int cocktailId);
+    IEnumerable<CocktailViewModel> GetAllWithIngredient(int ingredientId);
+}

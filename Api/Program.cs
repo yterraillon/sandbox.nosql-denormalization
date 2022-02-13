@@ -5,6 +5,7 @@ using Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure();
+builder.Services.AddApplication();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,11 +35,11 @@ app.MapPost("/ingredients", (IRepository<int, Ingredient> repository, Ingredient
     repository.Create(ingredient);
     return Results.Created($"/ingredients/{ingredient.Id}", ingredient.Id);
 });
-app.MapPut("ingredients", (IRepository<int, Ingredient> repository, Ingredient ingredient) =>
-{
-    repository.Update(ingredient);
-    return Results.NoContent();
-});
+// app.MapPut("ingredients", (IRepository<int, Ingredient> repository, Ingredient ingredient) =>
+// {
+//     repository.Update(ingredient);
+//     return Results.NoContent();
+// });
 app.MapDelete("ingredients/{id}", (IRepository<int, Ingredient> repository, int id) => 
     repository.Delete(id) ? Results.NoContent() : Results.Problem()); // TODO need rework
 
@@ -47,20 +48,24 @@ app.MapGet("/cocktails", (IRepository<int, Cocktail> repository) => repository.G
 app.MapGet("/cocktails/{id}", (IRepository<int, Cocktail> repository, int id) =>
     repository.Get(id) switch
     {
-        Cocktail cocktail => Results.Ok(cocktail),
+        { } cocktail => Results.Ok(cocktail),
         null => Results.NotFound()
     });
-app.MapPost("/cocktails", (IRepository<int, Cocktail> repository, Cocktail cocktail) =>
-{
-    repository.Create(cocktail);
-    return Results.Created($"/cocktails/{cocktail.Id}", cocktail.Id);
-});
-app.MapPut("cocktails", (IRepository<int, Cocktail> repository, Cocktail cocktail) =>
-{
-    repository.Update(cocktail);
-    return Results.NoContent();
-});
+// app.MapPost("/cocktails", async ([FromServices]IRepository<int, Cocktail> repository, [FromServices] Mediator mediator, [FromBody] Cocktail cocktail) =>
+// {
+//     repository.Create(cocktail);
+//     await mediator.Publish(new CocktailCreated(cocktail.Id));
+//     return Results.Created($"/cocktails/{cocktail.Id}", cocktail.Id);
+// });
+// app.MapPut("cocktails", (IRepository<int, Cocktail> repository, Cocktail cocktail) =>
+// {
+//     repository.Update(cocktail);
+//     return Results.NoContent();
+// });
 app.MapDelete("cocktails/{id}", (IRepository<int, Cocktail> repository, int id) => 
     repository.Delete(id) ? Results.NoContent() : Results.Problem()); // TODO need rework
+
+// CocktailViewModels
+app.MapGet("/cocktailViews", (ICocktailViewRepository repository) => repository.GetAll());
 
 app.Run();
